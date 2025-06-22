@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rifa do Prêmio</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <style>
+    .number-box {
+      display: inline-block;
+      width: 60px;
+      height: 60px;
+      margin: 5px;
+      text-align: center;
+      line-height: 60px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      border: 2px solid #ccc;
+    }
+    .available { background-color: #e0ffe0; }
+    .selected { background-color: #007bff; color: white; }
+    .reserved { background-color: #ffdada; cursor: not-allowed; }
+  </style>
+</head>
+<body class="bg-light">
+  <div class="container mt-4">
+    <h2 class="text-center">🎁 Rifa do iPhone 14 Pro Max</h2>
+    <p class="text-center">Valor: <strong>R$ 10,00 por número</strong></p>
+    
+    <div class="text-center mb-3">
+      <img src="https://via.placeholder.com/400x250.png?text=Pr%C3%AAmio+iPhone+14" class="img-fluid rounded shadow">
+    </div>
+
+    <h5 class="mb-2">Escolha seus números:</h5>
+    <div id="numberGrid" class="mb-4"></div>
+
+    <form id="rifaForm">
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <input type="text" class="form-control" placeholder="Seu nome" required />
+        </div>
+        <div class="col-md-4 mb-3">
+          <input type="email" class="form-control" placeholder="Seu e-mail" required />
+        </div>
+        <div class="col-md-4 mb-3">
+          <input type="tel" class="form-control" placeholder="WhatsApp (com DDD)" required />
+        </div>
+      </div>
+
+      <input type="hidden" id="selectedNumbers" name="selectedNumbers" />
+
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary">Gerar Pagamento (Pix)</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const totalNumbers = 100; // de 1 a 100
+    const numberGrid = document.getElementById("numberGrid");
+    const selected = new Set();
+
+    // Números reservados simulados (ex: já pagos)
+    const reservedNumbers = [10, 15, 23];
+
+    for (let i = 1; i <= totalNumbers; i++) {
+      const box = document.createElement("div");
+      box.classList.add("number-box");
+
+      if (reservedNumbers.includes(i)) {
+        box.classList.add("reserved");
+      } else {
+        box.classList.add("available");
+        box.addEventListener("click", () => {
+          if (selected.has(i)) {
+            selected.delete(i);
+            box.classList.remove("selected");
+          } else {
+            selected.add(i);
+            box.classList.add("selected");
+          }
+          document.getElementById("selectedNumbers").value = Array.from(selected).join(",");
+        });
+      }
+
+      box.innerText = i.toString().padStart(2, "0");
+      numberGrid.appendChild(box);
+    }
+
+    document.getElementById("rifaForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      alert("Você escolheu os números: " + Array.from(selected).join(", ") + "\n(Pagamento Pix será integrado no backend)");
+    });
+  </script>
+</body>
+</html>
